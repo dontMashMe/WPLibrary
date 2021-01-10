@@ -1,0 +1,749 @@
+/**
+Theme Name: Tema Knjige
+Author: Marijan Bebek
+*/
+
+html, body
+{
+    height: 100%;
+}
+
+body
+{
+    margin: 0px;
+    padding: 0px;
+    background: #FFF;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 14pt;
+    font-weight: 300;
+    color: #000000;
+}
+
+
+h1, h2, h3
+{
+    margin: 0;
+    padding: 0;
+}
+
+p, ol, ul
+{
+    margin-top: 0;
+}
+
+ol, ul
+{
+    padding: 0;
+    list-style: none;
+}
+
+p
+{
+    line-height: 180%;
+}
+
+
+a
+{
+    color: rgb(1, 115, 178);
+}
+
+a:hover, a:active
+{
+    text-decoration: underline;
+    outline-width: 0;
+}
+
+.container
+{
+    overflow: hidden;
+    margin: 0em auto;
+    width: 1200px;
+}
+
+/*********************************************************************************/
+/* Image Style                                                                   */
+/*********************************************************************************/
+
+.image
+{
+    display: inline-block;
+}
+
+.image img
+{
+    display: block;
+    width: 100%;
+}
+
+.image-full
+{
+    display: block;
+    width: 100%;
+    margin: 0 0 2em 0;
+}
+
+.image-left
+{
+    float: left;
+    margin: 0 2em 2em 0;
+}
+
+.image-centered
+{
+    display: block;
+    margin: 0 0 2em 0;
+}
+
+.image-centered img
+{
+    margin: 0 auto;
+    width: auto;
+}
+
+
+
+/*********************************************************************************/
+/* Social Icon Styles                                                            */
+/*********************************************************************************/
+
+ul.contact
+{
+    overflow:  hidden;
+    margin: 0em 0 3em 0;
+    padding-top: 1em;
+    text-align: center;
+}
+
+ul.contact li
+{
+    display: inline-block;
+    padding: 0em 0.30em;
+    font-size: 1em;
+}
+
+ul.contact li span
+{
+    display: none;
+    margin: 0;
+    padding: 0;
+}
+
+ul.contact li a
+{
+    color: #FFF;
+}
+
+ul.contact li a:before
+{
+    display: inline-block;
+    background: #0173B2;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+/*********************************************************************************/
+/* Button Style                                                                  */
+/*********************************************************************************/
+
+.button
+{
+    display: inline-block;
+    padding: 1em 2em 1em 2em;
+    background: #0173B2;
+    letter-spacing: 0.20em;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 400;
+    font-size: 0.90em;
+    color: #FFF;
+}
+
+
+
+
+/*********************************************************************************/
+/* 3-column                                                                      */
+/*********************************************************************************/
+
+.box{
+
+    margin-left:40px;
+    margin-right: 30px;
+    background: #FFF;
+    width: 304px;
+    padding: 40px 40px;
+}
+
+
+/*********************************************************************************/
+/* Header                                                                        */
+/*********************************************************************************/
+
+#header
+{
+    padding: 3em 0em;
+}
+header{
+    border-bottom: 1.5px solid #0174b2;    
+}
+
+/*********************************************************************************/
+/* Logo                                                                          */
+/*********************************************************************************/
+
+#logo
+{
+    position: absolute;
+    top: 1em;
+    left: 0;
+}
+#logo h1
+{
+    font-size: 2.5em;
+    font-weight: bold;
+}
+
+#logo a
+{
+    text-decoration: none;
+    color: #0173B2;
+}
+
+/*********************************************************************************/
+/* Menu                                                                          */
+/*********************************************************************************/
+
+
+.navcontainer{
+ width:100%;
+}
+.user-welcome{
+    margin-right: 50px;
+}
+#navigacija{
+    padding:0.5em;
+    font-size: larger;
+}
+#navigacija a{
+    color:black;
+}
+#navigacija ul li{
+    padding-right:15px;
+}
+.headerRow{
+    padding-top: 1.5em;
+}
+.logoCol{
+    text-align: right;
+}
+
+
+#logo_title{
+    width:64px;
+    height:64px;
+    float: left;
+    background-repeat: no-repeat;
+    background-position: left;
+    padding-left: 5px;
+    margin-right: 25px;
+}
+.homeicon {
+    width:64px;
+    height:64px;
+    background-repeat: no-repeat;
+    background-position: left;
+    padding-left: 5px;
+}
+
+.current-menu-item a{
+    color: rgb(1, 102, 179) !important;
+    font-size: 25px !important;
+    text-decoration: underline;
+}
+
+.profile-pic{
+    width:64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-right:10px;
+}
+
+.user-pers-links{
+    padding-left: 1em;
+    padding-right: 1em;
+}
+.user-pers-links>span>a{
+    color:inherit;
+    text-decoration: none;
+}
+
+#user-name{
+    padding-bottom: 5px;
+    border-bottom: 0.5px solid grey;
+}
+
+
+
+
+.user-pers-links>span>a:hover{
+    color: rgb(1, 102, 179) !important;}
+
+
+/*********************************************************************************/
+/* Banner                                                                        */
+/*********************************************************************************/
+#banner-wrapper
+{
+    border-top: 1.5px solid #0174b2;
+    border-bottom: 1.5px solid #0174b2;
+    overflow: hidden;
+    padding: 5em 0em 5em 0em;
+    background: url(images/banner.jpg) no-repeat center top;
+    background-size: 100% auto;
+}
+
+#banner h3
+{
+    margin-bottom: 1em;
+    font-size: 1.4em;
+    font-weight: 600;
+    color: rgba(0,0,0,.8);
+}
+
+#banner .button
+{
+    margin-top: 1em;
+}
+
+/*********************************************************************************/
+/* Page                                                                          */
+/*********************************************************************************/
+
+.user-prof-main_div{
+    padding-top:50px;
+}
+.user-prof-left{
+    border-right: 1.5px solid #0174b2;
+    text-align: center;
+    padding:1em;
+}
+.user-prof-left h6{
+    padding:0.5em;
+
+}
+.user-prof-left-icons{
+    padding-right:5px;
+}
+
+.user-prof-left img{
+    box-shadow: 0px 0px 0px 0.5px #000, 0px 0px 0px 1.5px #0174b2;
+}
+
+.user-prof-table{
+    width:90%;
+    margin-bottom: 3em;
+}
+
+
+@keyframes fadeIn{
+    from{opacity: 0;}
+    to{opacity: 1;
+    }
+}
+@-webkit-keyframes fadeIn {
+    from{opacity: 0;}
+    to{opacity: 1;
+    }
+}
+.hover_class a {
+    display:none;    
+    padding-left: 10px;
+    margin-bottom: 5px;
+
+}
+
+.hover_class:hover a {
+    display:block;
+    color:inherit;
+    -webkit-animation: fadeIn 0.5s;
+    animation: fadeIn 0.5s;
+}
+.hover_class{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+.archive-knjige{
+    width: 150px;
+    height: 253px;
+}
+.page .entry-header {
+	display: none;
+}
+.page .entry-content h2 {
+	margin-top: 0;
+}
+#page-wrapper
+{
+    overflow: hidden;
+    padding: 5em 0em;
+    background: #FFF;
+}
+.single_knjiga_div{
+    margin: auto;
+    width: 50%;
+    padding: 50px;
+}
+
+.single_knjiga_img{
+    width: 300px;
+    height: 393px;
+}
+
+.single_knjiga_rowUnder{
+    font-size: larger;
+}
+.single-title{
+    font-family: ubuntu-1, ubuntu-2, Arial, Helvetica, sans-serif;
+    font: 300 36px/40px 'ubuntu';
+    color: rgb(33, 24, 25);
+    text-transform: none;
+    margin-bottom: 0px;
+    letter-spacing: -1px;
+}
+.books-div .row{
+    margin-bottom: 25px;
+}
+
+.autor_pic_singl{
+    width: 450px;
+    height: 450px;
+    box-shadow: 0px 0px 0px 0.5px #000, 0px 0px 0px 2px #0174b2;
+  
+}
+.autor_list_singl{
+    list-style-type:disc;
+
+}
+.autor_pic_div{
+    border-right: 0.5px solid #0174b2 ;
+}
+
+.vijesti-right{
+    margin-top: 2em;
+    padding:1em;
+    border-left:0.5px solid #0174b2 ;
+}
+.vijesti-img{
+    width: 450px;
+    height:300px;
+    margin-top:1.5em;
+    margin-bottom:1.5em;
+    box-shadow: 0px 0px 0px 0.5px #000, 0px 0px 0px 2px #0174b2;
+}
+.vijesti-text{
+    padding-top:0.5em;
+}
+
+#page .title
+{
+    margin-bottom: 3em;
+    text-align: center;
+}
+
+#page h3
+{
+    margin-bottom: 1em;
+    font-size: 1.4em;
+    font-weight: 600;
+    color: rgba(0,0,0,.8);
+}
+
+.pboxA,
+.pboxB,
+.pboxC
+{
+    width: 384px;
+}
+
+.pboxA,
+.pboxB
+{
+    float: left;
+    margin-right: 24px;
+}
+
+.pboxC
+{
+    float: right;
+}
+
+.kosarica-unlogged{
+    padding: 3.5em;
+}
+.not-logged-user{
+    padding:5em; 
+    height: 50%;
+    width:50%;
+}
+.kosarica-opis{
+    padding:2.5em;
+    
+}
+.kosarica-left
+{
+    border-right: 1.5px solid #0174b2;
+    padding-bottom: 5em;
+    margin-bottom: 0.5em;
+}
+.lista-kosarica{
+    padding-bottom: 5em;
+    margin-left:2em;
+}
+.kosarica-right{
+    width:30%;
+}
+.vijesti-maindiv{
+    padding-top:0.5em;
+    padding-right: 3em;
+    padding-bottom: 3em;
+    padding-left: 3em;
+}
+
+.footer-sidebar-title{
+    font-size: medium;
+    margin: auto;
+}
+.foot-vsmti{
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center;
+}
+.foot-container{
+    padding-top:2em;
+}
+footer{
+    
+    border-top:1.5px solid #0174b2;
+}
+
+.main-cont{
+    min-height: 900px;
+}
+
+.repo-div{
+    padding:3em;
+}
+
+/*********************************************************************************/
+/* Content                                                                       */
+/*********************************************************************************/
+
+#katalog{
+    margin-top: 50px;
+    width:100%;
+}
+
+/*********************************************************************************/
+/* Sidebar                                                                       */
+/*********************************************************************************/
+
+
+
+/*********************************************************************************/
+/* Footer                                                                        */
+/*********************************************************************************/
+
+#footer-wrapper
+{
+    overflow: hidden;
+    padding: 5em 0em;
+    background: rgba(0,0,0,.05);
+}
+
+
+#footer h2
+{
+    display: inline-block;
+    padding-bottom: 1em;
+    font-size: 1.6em;
+    font-weight: 400;
+}
+
+#footer #fbox1
+{
+    float: left;
+    width: 384px;
+}
+
+#footer #fbox2
+{
+    float: right;
+    width: 792px;
+}
+
+/*********************************************************************************/
+/* Copyright                                                                     */
+/*********************************************************************************/
+
+#copyright
+{
+    overflow: hidden;
+    padding: 5em 0em;
+    border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+#copyright p
+{
+    letter-spacing: 0.20em;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0.80em;
+    color: rgba(0,0,0,0.6);
+}
+
+#copyright a
+{
+    text-decoration: none;
+    color: rgba(0,0,0,0.8);
+}
+
+/*********************************************************************************/
+/* REGISTRACIJA                                                                  */
+/*********************************************************************************/
+
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,500);
+.reg_div :focus {
+  outline: none;
+}
+
+#login-box {
+  margin: 0;
+  padding: 0;
+  background: #DDD;
+  font-size: 16px;
+  color: #222;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+}
+
+#login-box {
+  position: relative;
+  margin: 5% auto;
+  width: 600px;
+  height: 450px;
+  background: #FFF;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  padding: 40px;
+  width: 300px;
+  height: 400px;
+}
+
+.reg_div h1 {
+  margin: 0 0 20px 0;
+  font-weight: 300;
+  font-size: 28px;
+}
+
+.left input[type="text"],
+.left input[type="password"] {
+  display: block;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  padding: 4px;
+  width: 220px;
+  height: 32px;
+  border: none;
+  border-bottom: 1px solid #AAA;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
+
+.left input[type="text"]:focus,
+.left input[type="password"]:focus {
+  border-bottom: 2px solid #16a085;
+  color: #16a085;
+  transition: 0.2s ease;
+}
+
+.left input[type="submit"] {
+  margin-top: 28px;
+  width: 120px;
+  height: 32px;
+  background: #16a085;
+  border: none;
+  border-radius: 2px;
+  color: #FFF;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  text-transform: uppercase;
+  transition: 0.1s ease;
+  cursor: pointer;
+  margin-bottom: 25px;
+}
+
+.left input[type="submit"]:hover,
+.left input[type="submit"]:focus {
+  opacity: 0.8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  transition: 0.1s ease;
+}
+
+.left input[type="submit"]:active {
+  opacity: 1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  transition: 0.1s ease;
+}
+
+
+.right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  box-sizing: border-box;
+  padding: 40px;
+  width: 300px;
+  height: 400px;
+
+}
+
+.right .loginwith {
+  display: block;
+  margin-bottom: 40px;
+  font-size: 28px;
+  color: #FFF;
+  text-align: center;
+}
+
+button.social-signin {
+  margin-bottom: 20px;
+  width: 220px;
+  height: 36px;
+  border: none;
+  border-radius: 2px;
+  color: #FFF;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  transition: 0.2s ease;
+  cursor: pointer;
+}
+select>option{
+    font-size: 16px;
+    color: #222;
+    font-family: 'Roboto', sans-serif;
+}
