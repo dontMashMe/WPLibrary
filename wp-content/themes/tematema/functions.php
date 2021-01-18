@@ -232,10 +232,21 @@ function vrati_knjige_korisnika(){
 	$table_name = 'wp_customer_book';
 	$userId = $_SESSION['user_id'];
 	$results = $wpdb->get_results(
-		$wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %d", $userId)
+		$wpdb->prepare("SELECT * FROM $table_name WHERE user_id = %d AND active = 1", $userId)
 	);
 	return $results;
 }
+function promijeni_status_knjige(){
+	global $wpdb;
+	$table_name = 'wp_customer_book';
+	$userId = $_SESSION['user_id'];
+	$knjigaId = $_POST['knjiga_id'];
+	$wpdb->update( $table_name, array( 'active' => 0), array('user_id'=>$userId, 'book_id'=>$knjigaId));
+	return 0;
+
+}
+add_action('wp_ajax_promijeni_status_knjige', 'promijeni_status_knjige');
+add_action('wp_ajax_nopriv_promijeni_status_knjige', 'promijeni_status_knjige');
 function vrati_smjer_poId($id){
 	$smjerovi = daj_smjerove();
 	foreach($smjerovi as $a){
@@ -351,6 +362,37 @@ function stvori_repo_html($results){
 
 
 }
+
+function vrati_smjer($ime){
+	$args = array(
+		'posts_per_page' => -1,
+		'post_type' => 'smjer',
+		'post_status' => 'publish'
+		);
+	$popisSmjerova = get_posts($args);
+	foreach ($popisSmjerova as $a){
+		if($a->post_title == $ime){
+			$autor = $a;
+			break;
+		}
+	}
+	return $autor;
+}
+function vrati_mentora($ime){
+	$args = array(
+		'posts_per_page' => -1,
+		'post_type' => 'mentor',
+		'post_status' => 'publish'
+		);
+	$popisAutora = get_posts($args);
+	foreach ($popisAutora as $a){
+		if($a->post_title == $ime){
+			$autor = $a;
+			break;
+		}
+	}
+	return $autor;
+}
 function vrati_autora($ime){
 	$args = array(
 		'posts_per_page' => -1,
@@ -361,6 +403,7 @@ function vrati_autora($ime){
 	foreach ($popisAutora as $a){
 		if($a->post_title == $ime){
 			$autor = $a;
+			break;
 		}
 	}
 	return $autor;
@@ -406,7 +449,9 @@ function daj_radove(){
 			'datum_objave' => $a->post_date,
 			'sadrzaj' => $a->post_content,
 			'smjer' => $smjer,
-			'vrsta' => ''
+			'vrsta' => '',
+			'ustanova' => '',
+			'autor_rada' => ''
 		];
 		$taxs = get_the_terms($a->ID, 'vrsta_rada');
 		if(!empty($taxs) && !is_wp_error($taxs)){
@@ -414,10 +459,21 @@ function daj_radove(){
 				$obj->vrsta = $b->name;
 			}
 		}
+		$taxs = get_the_terms($a->ID, 'ustanova');
+		if(!empty($taxs) && !is_wp_error($taxs)){
+			foreach($taxs as $b){
+				$obj->ustanova = $b->name;
+			}
+		}
+		$taxs = get_the_terms($a->ID, 'autor_rada');
+		if(!empty($taxs) && !is_wp_error($taxs)){
+			foreach($taxs as $b){
+				$obj->autor_rada = $b->name;
+			}
+		}
 		array_push($returnList, $obj);
 	}
 	return $returnList;
-
 }
 
 function daj_knjige(){
@@ -497,6 +553,18 @@ function daj_knjige_autora($autor){
 	return $returnList;
 }
 
+function daj_radove_mentora($mentor){
+	$returnList = array();
+	$svi_radovi = daj_radove();
+	foreach($svi_radovi as $a){
+		$ime_mentora = get_post_meta($a->id_rada, 'mentor_rada', true);
+		if($ime_mentora == $mentor){
+			array_push($returnList, $a);
+		}
+	}
+	return $returnList;
+}
+
 function vrati_knjigu_poId($id){
 	$popisKnjiga = daj_knjige();
 	foreach($popisKnjiga as $a){
@@ -507,6 +575,7 @@ function vrati_knjigu_poId($id){
 	return null;
 
 }
+
 
 function daj_rad_poId($id){
 	$popisRadova = daj_radove();
@@ -524,16 +593,22 @@ function add_meta_box_knjige(){
 function add_meta_box_smjer(){
 	add_meta_box('vsmti_smjer_rada', 'Smjer', 'html_meta_box_smjer', 'rad');
 }
+function add_meta_box_mentor(){
+	add_meta_box('vsmti_mentor_rada', 'Mentor', 'html_meta_box_mentor', 'rad');
+}
 function metabox_callback($post, $metabox){
 	echo get_post_meta($post->ID, 'knjiga', true);
 }
 function metabox_callbackSm($post, $metabox){
 	echo get_post_meta($post->ID, 'rad', true);
 }
+
 add_action ('add_meta_boxes', 'add_meta_box_knjige');
 add_action('add_meta_boxes', 'add_meta_box_smjer');
+add_action('add_meta_boxes', 'add_meta_box_mentor');
 add_action('save_post', 'spremi_smjer_rada');
 add_action ('save_post', 'spremi_autora_knjige');
+add_action('save_post', 'spremi_mentora_rada');
 
 //SMJER - TAKSONOMIJE I META BOXOVI
 
@@ -995,23 +1070,54 @@ function html_meta_box_smjer(){
 	</div>';
 
 }
-function spremi_autora_knjige($post_id){
+
+function html_meta_box_mentor(){
+	$post_id = get_the_id();
+	wp_nonce_field('spremi_mentora_rada', 'mentor_rada_nonce');
+	$mentor = get_post_meta($post_id, 'mentor_rada', true);
+	echo '
+	<div>
+		<div>
+			<label for="mentor_rada">Mentori: </label>
+			<select id="mentor_rada" name="mentor_rada" style="width: 60%; height: 60px; margin-left: 10px;">
+			'.
+			$args = array(
+				'posts_per_page' => -1,
+				'post_type' => 'mentor', 
+				'post_status' => 'publish'
+			);
+			$mentori = get_posts($args);
+			$html = " ";
+			foreach($mentori as $a){
+				$selected = "";
+				if($mentor == $a->post_title){
+					$selected = "selected";
+				};
+				$html .= '<option value="'.$a->post_title.'" '. $selected .' >'.$a->post_title.'</option>';
+			}
+			echo $html.'</select> 
+		</div>
+	</div>';
+}
+
+function spremi_mentora_rada($post_id){
 	$is_autosave = wp_is_post_autosave($post_id);
 	$is_revision = wp_is_post_revision( $post_id );
-	$is_valid_nonce_autor_knjige = ( isset( $_POST[ 'autor_knjige_nonce' ] ) &&
-			 wp_verify_nonce($_POST[ 'autor_knjige_nonce' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
+	$is_valid_nonce_autor_knjige = ( isset( $_POST[ 'mentor_rada_nonce' ] ) &&
+			 wp_verify_nonce($_POST[ 'mentor_rada_nonce' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
 
 	if($is_autosave || $is_revision || !$is_valid_nonce_autor_knjige){return;}
-	if(!empty($_POST['autori_knjige'])){
-		if(is_array($_POST[ 'autori_knjige' ])){
-			$autori = implode(", ", $_POST[ 'autori_knjige']);
+	if(!empty($_POST['mentor_rada'])){
+		if(is_array($_POST[ 'mentor_rada' ])){
+			$smjer = implode(", ", $_POST[ 'mentor_rada']);
 		}else{
-				$autori = $_POST['autori_knjige'];
+				$smjer = $_POST['mentor_rada'];
 		}
-		update_post_meta($post_id, 'autori_knjige', $autori);
+		update_post_meta($post_id, 'mentor_rada', $smjer);
 	}else{
-		delete_post_meta($post_id, 'autori_knjige');
+		delete_post_meta($post_id, 'mentor_rada');
 	}
+		 
 }
 
 function spremi_smjer_rada($post_id){
@@ -1028,6 +1134,24 @@ function spremi_smjer_rada($post_id){
 		update_post_meta($post_id, 'smjer_rada', $smjer);
 	}else{
 		delete_post_meta($post_id, 'smjer_rada');
+	}
+}
+function spremi_autora_knjige($post_id){
+	$is_autosave = wp_is_post_autosave($post_id);
+	$is_revision = wp_is_post_revision( $post_id );
+	$is_valid_nonce_autor_knjige = ( isset( $_POST[ 'autor_knjige_nonce' ] ) &&
+			 wp_verify_nonce($_POST[ 'autor_knjige_nonce' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
+
+	if($is_autosave || $is_revision || !$is_valid_nonce_autor_knjige){return;}
+	if(!empty($_POST['autori_knjige'])){
+		if(is_array($_POST[ 'autori_knjige' ])){
+			$autori = implode(", ", $_POST[ 'autori_knjige']);
+		}else{
+				$autori = $_POST['autori_knjige'];
+		}
+		update_post_meta($post_id, 'autori_knjige', $autori);
+	}else{
+		delete_post_meta($post_id, 'autori_knjige');
 	}
 }
 // Register Custom Post Type
@@ -1066,7 +1190,7 @@ function registriraj_cpt_radovi() {
 		'label'                 => 'Rad',
 		'description'           => 'Diplomski i seminarski radovi',
 		'labels'                => $labels,
-		'supports'              => array( 'title', 'editor' ),
+		'supports'              => array( 'title', 'editor', 'thumbnail' ),
         'menu_icon' => 'dashicons-welcome-learn-more',
 		'hierarchical'          => false,
 		'public'                => true,
@@ -1123,6 +1247,138 @@ function registriraj_taksonomiju_vrsta() {
 }
 add_action( 'init', 'registriraj_cpt_radovi', 0 );
 add_action( 'init', 'registriraj_taksonomiju_vrsta', 0 );
+
+// Register Custom Taxonomy
+function registriraj_taksonomiju_ustanova() {
+
+	$labels = array(
+		'name'                       => 'Ustanove',
+		'singular_name'              => 'Ustanova',
+		'menu_name'                  => 'Ustanova',
+		'all_items'                  => 'Sve ustanove',
+		'parent_item'                => 'Roditeljski element',
+		'parent_item_colon'          => 'Roditeljski element',
+		'new_item_name'              => 'Nova ustanova',
+		'add_new_item'               => 'Dodaj novu ustanovu',
+		'edit_item'                  => 'Uredi ustanovu',
+		'update_item'                => 'Ažuriraj ustanovu',
+		'view_item'                  => 'Pogledaj ustanovu',
+		'separate_items_with_commas' => 'Odvoji zarezom',
+		'add_or_remove_items'        => 'Dodaj ili ukloni',
+		'choose_from_most_used'      => 'Odaberi među najkorištenijima',
+		'popular_items'              => 'Popularne ustanove',
+		'search_items'               => 'Pretraži ustanove',
+		'not_found'                  => 'Nije pronađeno',
+		'no_terms'                   => 'Nema rezultata',
+		'items_list'                 => 'Lista',
+		'items_list_navigation'      => 'Navigacija',
+	);
+	$args = array(
+		'labels'                     => $labels,
+		'hierarchical'               => false,
+		'public'                     => true,
+		'show_ui'                    => true,
+		'show_admin_column'          => true,
+		'show_in_nav_menus'          => true,
+		'show_tagcloud'              => true,
+	);
+	register_taxonomy( 'ustanova', array( 'rad' ), $args );
+
+}
+add_action( 'init', 'registriraj_taksonomiju_ustanova', 0 );
+// Register Custom Taxonomy
+function registriraj_taksonomiju_autor_rada() {
+
+	$labels = array(
+		'name'                       => 'Autori rada',
+		'singular_name'              => 'Autor rada',
+		'menu_name'                  => 'Autor rada',
+		'all_items'                  => 'Svi autori radova',
+		'parent_item'                => 'Roditeljski element',
+		'parent_item_colon'          => 'Roditeljski element',
+		'new_item_name'              => 'Novi autor rada',
+		'add_new_item'               => 'Dodaj novog autora rada',
+		'edit_item'                  => 'Uredi autora rada',
+		'update_item'                => 'Ažuriraj autora rada',
+		'view_item'                  => 'Pogledaj autora rada',
+		'separate_items_with_commas' => 'Odvoji zarezom',
+		'add_or_remove_items'        => 'Dodaj ili ukloni',
+		'choose_from_most_used'      => 'Odaberi među najkorištenijim',
+		'popular_items'              => 'Popularno',
+		'search_items'               => 'Pretraži',
+		'not_found'                  => 'Nije pronađeno',
+		'no_terms'                   => 'Nema rezultata',
+		'items_list'                 => 'Lista',
+		'items_list_navigation'      => 'Navigacija',
+	);
+	$args = array(
+		'labels'                     => $labels,
+		'hierarchical'               => false,
+		'public'                     => true,
+		'show_ui'                    => true,
+		'show_admin_column'          => true,
+		'show_in_nav_menus'          => true,
+		'show_tagcloud'              => true,
+	);
+	register_taxonomy( 'autor_rada', array( 'rad' ), $args );
+
+}
+add_action( 'init', 'registriraj_taksonomiju_autor_rada', 0 );
+// Register Custom Post Type
+function registriraj_mentor_cpt() {
+
+	$labels = array(
+		'name'                  => 'Mentori',
+		'singular_name'         => 'Mentor',
+		'menu_name'             => 'Mentori',
+		'name_admin_bar'        => 'Mentor',
+		'archives'              => 'Mentori arhiva',
+		'attributes'            => 'Atributi',
+		'parent_item_colon'     => 'Roditeljski element',
+		'all_items'             => 'Svi mentori',
+		'add_new_item'          => 'Dodaj novog mentora',
+		'add_new'               => 'Dodaj novog',
+		'new_item'              => 'Novi mentor',
+		'edit_item'             => 'Uredi mentora',
+		'update_item'           => 'Ažuriraj mentora',
+		'view_item'             => 'Pogledaj mentora',
+		'view_items'            => 'Pogledaj mentore',
+		'search_items'          => 'Pretraži mentora',
+		'not_found'             => 'Nije pronađeno',
+		'not_found_in_trash'    => 'Nije pronađeno u smetju',
+		'featured_image'        => 'Istaknuta slika',
+		'set_featured_image'    => 'Postavi istaknutu sliku',
+		'remove_featured_image' => 'Ukloni istaknutu sliku',
+		'use_featured_image'    => 'Postavi za istaknutu sliku',
+		'insert_into_item'      => 'Umetni',
+		'uploaded_to_this_item' => 'Preneseno',
+		'items_list'            => 'Lista',
+		'items_list_navigation' => 'Navigacija',
+		'filter_items_list'     => 'Filtriranje',
+	);
+	$args = array(
+		'label'                 => 'Mentor',
+		'description'           => 'Mentori akademskih radova',
+		'labels'                => $labels,
+		'supports'              => array( 'title', 'editor', 'thumbnail' ),
+		'hierarchical'          => false,
+		'public'                => true,
+		'show_ui'               => true,
+		'show_in_menu'          => true,
+		'menu_icon' =>   'dashicons-businesswoman',
+		'menu_position'         => 4,
+		'show_in_admin_bar'     => true,
+		'show_in_nav_menus'     => true,
+		'can_export'            => true,
+		'has_archive'           => true,
+		'exclude_from_search'   => false,
+		'publicly_queryable'    => true,
+		'capability_type'       => 'page',
+	);
+	register_post_type( 'mentor', $args );
+
+}
+add_action( 'init', 'registriraj_mentor_cpt', 0 );
 
 function load_stylesheets(){
 

@@ -168,6 +168,23 @@ function makni_izKosarice(knjiga_id){
         })
     });
 }
+function vratiKnjigu(knjiga_id){
+    const redakKnjige = $('#' + knjiga_id);
+    $.ajax({
+        type:'post',
+        url:my_ajax_object.ajax_url,
+        data:{
+            action: 'promijeni_status_knjige',
+            knjiga_id : knjiga_id
+        },
+        success:function(data){
+            console.log(data);
+            alert("Knjiga uspješno vraćena!");
+            redakKnjige.remove();
+        }
+    })
+}
+
 function popIdKnjige(id, ids){
     for(var i = 0; i < ids.length; i++){
         if(ids[i] == id){
@@ -185,6 +202,9 @@ function dovrsiNarudzbu(ids){
             ids: ids
         },
         success:function(data){
+            alert("Knjige su uspješno upisane! Pokupite ih u knjižnici.");
+            $(window).attr('location','http://localhost/wordpress/profil');
+
             console.log(data);
         }
     })
@@ -233,4 +253,5 @@ function searchRepo(search_string){
         }
     })
 }
+
 

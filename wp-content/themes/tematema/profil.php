@@ -10,7 +10,6 @@ $user_info = vrati_user_info();
 <?php
 if ($user_info != null) {
     $knjige_korisnika = vrati_knjige_korisnika();
-    console_log($knjige_korisnika);
     $datum = formatiraj_datum($user_info->registered_date);
     $sva_djela = daj_knjige();
     shuffle($sva_djela);
@@ -38,6 +37,7 @@ if ($user_info != null) {
                             <th>Kategorije</th>
                             <th>Posuđeno</th>
                             <th>Rok povrata</th>
+                            <th>Vrati</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -48,7 +48,7 @@ if ($user_info != null) {
                             $autor_obj = vrati_autora(get_post_meta($a->book_id, 'autori_knjige', true));
                             $counter++;
                         ?>
-                            <tr>
+                            <tr id="<?php echo $a->book_id?>">
                                 <th scope="row">
                                     <?php echo $counter; ?>
                                 </th>
@@ -79,11 +79,16 @@ if ($user_info != null) {
                                     echo $date->format('Y-m-d');
                                     ?>
                                 </th>
+                                <th scope="row">
+                                    <a href="" style="padding-left:10px;" onclick="vratiKnjigu(<?php echo $a->book_id?>); return false;"><i class="fas fa-exchange-alt"></i></a>
+                                </th>
                             </tr>
 
                         <?php } ?>
 
                     </tbody>
+                    <small>*<b>Napomena</b>, vraćanje knjige kroz sučelje ne znači da ste knjigu <i>fizički vratili</i>, već samo Vama služi kao podsjetnik 🙂</small>
+
                 </table>
                 <h6>Knjige koje bi vas možda mogle zanimati.</h6>
                 <div class="container-fluid">
