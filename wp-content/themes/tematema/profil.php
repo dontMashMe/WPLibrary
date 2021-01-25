@@ -5,6 +5,10 @@ Template Name: Profil
 get_header();
 
 $user_info = vrati_user_info();
+$nema_preporuke = (object)[
+    'ime_knjige' => "Nažalost, nemamo preporuku.",
+    'istaknuta_slika' => get_template_directory_uri() . '/images/nobook.png',
+];
 ?>
 
 <?php
@@ -12,10 +16,22 @@ if ($user_info != null) {
     $knjige_korisnika = vrati_knjige_korisnika();
     $datum = formatiraj_datum($user_info->registered_date);
     $sva_djela = daj_knjige();
-    shuffle($sva_djela);
-    $prva_knjiga = $sva_djela[0];
-    $druga_knjiga = $sva_djela[1];
-    $treca_knjiga = $sva_djela[2];
+    $preporucena_djela = preporuci_knjige($knjige_korisnika, $sva_djela);
+    console_log($preporucena_djela);
+    if($preporucena_djela != null && sizeof($preporucena_djela) > 0 ){
+        if($preporucena_djela[0] != null) $prva_knjiga = $preporucena_djela[0];
+        else $prva_knjiga = $nema_preporuke;
+        if($preporucena_djela[1] != null) $druga_knjiga = $preporucena_djela[1];
+        else $druga_knjiga = $nema_preporuke;
+        if($preporucena_djela[2] != null) $treca_knjiga = $preporucena_djela[2];
+        else $treca_knjiga = $nema_preporuke;
+    }else{
+        shuffle($sva_djela);
+        $prva_knjiga = $sva_djela[0];
+        $druga_knjiga = $sva_djela[1];
+        $treca_knjiga = $sva_djela[2];
+    }
+        
 ?>
     <div class="container-fluid user-prof-main_div">
         <div class="row">
@@ -42,49 +58,62 @@ if ($user_info != null) {
                     </thead>
                     <tbody>
                         <?php
-                        $counter = 0;
-                        foreach ($knjige_korisnika as $a) {
-                            $knjiga = vrati_knjigu_poId($a->book_id);
-                            $autor_obj = vrati_autora(get_post_meta($a->book_id, 'autori_knjige', true));
-                            $counter++;
-                        ?>
-                            <tr id="<?php echo $a->book_id?>">
-                                <th scope="row">
-                                    <?php echo $counter; ?>
-                                </th>
-                                <th scope="row">
-                                    <?php echo $knjiga->ime_knjige ?>
-                                </th>
-                                <th scope="row">
-                                    <a href="<?php echo $autor_obj->guid ?>"><?php echo $autor_obj->post_title ?></a>
-                                </th>
-                                <th scope="row">
-                                    <?php
-                                    $kates = "";
-                                    foreach ($knjiga->kategorije as $b) {
-                                        foreach ($b as $c) {
-                                            $kates .= $c->kategorija_ime . ", ";
-                                        }
-                                    }
-                                    echo rtrim($kates, ", ");
-                                    ?>
-                                </th>
-                                <th scope="row" style="color:red;">
-                                    <?php echo $a->date_rented ?>
-                                </th>
-                                <th scope="row" style="color:green;">
-                                    <?php
-                                    $date = new DateTime($a->date_rented);
-                                    $date->add(new DateInterval('P14D'));
-                                    echo $date->format('Y-m-d');
-                                    ?>
-                                </th>
-                                <th scope="row">
-                                    <a href="" style="padding-left:10px;" onclick="vratiKnjigu(<?php echo $a->book_id?>); return false;"><i class="fas fa-exchange-alt"></i></a>
-                                </th>
-                            </tr>
+                        if (sizeof($knjige_korisnika) > 0) {
 
-                        <?php } ?>
+
+                            $counter = 0;
+                            foreach ($knjige_korisnika as $a) {
+                                $knjiga = vrati_knjigu_poId($a->book_id);
+                                $autor_obj = vrati_autora(get_post_meta($a->book_id, 'autori_knjige', true));
+                                $counter++;
+                        ?>
+                                <tr id="<?php echo $a->book_id ?>">
+                                    <th scope="row">
+                                        <?php echo $counter; ?>
+                                    </th>
+                                    <th scope="row">
+                                        <?php echo $knjiga->ime_knjige ?>
+                                    </th>
+                                    <th scope="row">
+                                        <a href="<?php echo $autor_obj->guid ?>"><?php echo $autor_obj->post_title ?></a>
+                                    </th>
+                                    <th scope="row">
+                                        <?php
+
+                                        $kates = "";
+                                        foreach ($knjiga->kategorije as $b) {
+                                            foreach ($b as $c) {
+                                                $kates .= $c->kategorija_ime . ", ";
+                                            }
+                                        }
+                                        echo rtrim($kates, ", ");
+                                        ?>
+                                    </th>
+                                    <th scope="row" style="color:red;">
+                                        <?php echo $a->date_rented ?>
+                                    </th>
+                                    <th scope="row" style="color:green;">
+                                        <?php
+                                        $date = new DateTime($a->date_rented);
+                                        $date->add(new DateInterval('P14D'));
+                                        echo $date->format('Y-m-d');
+                                        ?>
+                                    </th>
+                                    <th scope="row">
+                                        <a href="" style="padding-left:10px;" onclick="vratiKnjigu(<?php echo $a->book_id ?>); return false;"><i class="fas fa-exchange-alt"></i></a>
+                                    </th>
+                                </tr>
+
+                            <?php }
+                        } else {
+                            ?>
+                            <th scope="row">
+                                <td colspan="6" style="text-align:left;">
+                                    <p>Trenutno nemate niti jednu posuđenu knjigu.</p>
+                                </td>
+                            </th>
+                        <?php
+                        } ?>
 
                     </tbody>
                     <small>*<b>Napomena</b>, vraćanje knjige kroz sučelje ne znači da ste knjigu <i>fizički vratili</i>, već samo Vama služi kao podsjetnik 🙂</small>

@@ -169,7 +169,14 @@ function update_dostupnost($book_id){
 	$dostupnost = $knjiga->dostupnost - 1;
 	wp_set_post_terms($book_id, strval($dostupnost), 'dostupno');
 }
+
+function update_dostupnost_dodaj($book_id){
+	$knjiga = vrati_knjigu_poId($book_id);
+	$dostupnost = $knjiga->dostupnost + 1;
+	wp_set_post_terms($book_id, strval($dostupnost), 'dostupno');
+}
 add_action( 'init', 'update_dostupnost', 20 );
+add_action( 'init', 'update_dostupnost_dodaj', 20 );
 
 function prijavi_korisnika(){
 	global $wpdb;
@@ -242,6 +249,7 @@ function promijeni_status_knjige(){
 	$userId = $_SESSION['user_id'];
 	$knjigaId = $_POST['knjiga_id'];
 	$wpdb->update( $table_name, array( 'active' => 0), array('user_id'=>$userId, 'book_id'=>$knjigaId));
+	update_dostupnost_dodaj($knjigaId);
 	return 0;
 
 }
@@ -539,7 +547,37 @@ function daj_knjige(){
 	
 }
 
+//posalji polja kao parametar da ih ne moramo ucitavati dvaput
+function preporuci_knjige($knjige_korisnika, $sve_knjige){
+	if(!sizeof($knjige_korisnika) == 0){
+		$kategorije = array();
+		$preporucena_djela = array();
+		$ids = array();
+		foreach($knjige_korisnika as $a){
+			array_push($ids, $a->book_id);
+			$knjiga = vrati_knjigu_poId($a->book_id);
+			foreach ($knjiga->kategorije as $b) {
+				foreach ($b as $c) {
+					array_push($kategorije, $c->kategorija_ime);
+				}
+			}
+		}
+		foreach($sve_knjige as $a){
+			foreach($a->kategorije as $b){
+				foreach($b as $c){ //ista kategorija                 //nije duplikat                     //nije već posuđena knjiga
+					if(in_array($c->kategorija_ime, $kategorije) && !in_array($a, $preporucena_djela) && !in_array($a->id_knjige, $ids)){
+						array_push($preporucena_djela, $a);
+					}
+				}
+			}
+		}
+		return $preporucena_djela;
+	}
+	else{
+		echo 0;
+	}
 
+}
 
 function daj_knjige_autora($autor){
 	$returnList = array();

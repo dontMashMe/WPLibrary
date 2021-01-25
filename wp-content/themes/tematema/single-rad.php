@@ -44,7 +44,7 @@ $istaknutaSlika = get_the_post_thumbnail_url($post->ID);
 
                     <tr>
                         <th>Smjer:</th>
-                        <td><a href="<?php echo $smjer_obj->guid ?>"><?php echo $smjer_obj->post_title ?></a></td>
+                        <td><?php echo $smjer_obj->post_title ?></td>
                     </tr>
                     <tr>
                         <th>Prava pristupa:</th>
