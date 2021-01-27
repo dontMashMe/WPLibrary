@@ -562,7 +562,7 @@ function preporuci_knjige($knjige_korisnika, $sve_knjige){
 				}
 			}
 		}
-		foreach($sve_knjige as $a){
+		foreach($sve_knjige as $a){  
 			foreach($a->kategorije as $b){
 				foreach($b as $c){ //ista kategorija                 //nije duplikat                     //nije već posuđena knjiga
 					if(in_array($c->kategorija_ime, $kategorije) && !in_array($a, $preporucena_djela) && !in_array($a->id_knjige, $ids)){
@@ -571,6 +571,7 @@ function preporuci_knjige($knjige_korisnika, $sve_knjige){
 				}
 			}
 		}
+	
 		return $preporucena_djela;
 	}
 	else{
@@ -1444,10 +1445,17 @@ function include_jquery(){
 add_action('wp_enqueue_scripts', 'include_jquery');
 add_action('wp_enqueue_scripts', 'load_stylesheets');
 
-function include_bootstrapJs(){
-	wp_enqueue_script('bootstrapjs', get_template_directory_uri().'/js/bootstrap.min.js', "", 1, true);
+function pwwp_enqueue_my_scripts() {
+    // jQuery is stated as a dependancy of bootstrap-js - it will be loaded by WordPress before the BS scripts 
+    wp_enqueue_script( 'bootstrap-js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', array('jquery'), true); // all the bootstrap javascript goodness
 }
-add_action('wp_enqueue_scripts', 'include_bootstrapJs');
+add_action('wp_enqueue_scripts', 'pwwp_enqueue_my_scripts');
+
+function pwwp_enqueue_my_scripts_sweetAlert() {
+    // jQuery is stated as a dependancy of bootstrap-js - it will be loaded by WordPress before the BS scripts 
+    wp_enqueue_script( 'sweetalert', '//cdn.jsdelivr.net/npm/sweetalert2@10', "", 1, true); // all the bootstrap javascript goodness
+}
+add_action('wp_enqueue_scripts', 'pwwp_enqueue_my_scripts_sweetAlert');
 
 function loadjs(){
 
@@ -1458,9 +1466,9 @@ function loadjs(){
 function enqueue_load_fa() {
 	wp_enqueue_script( 'load-fa', 'https://kit.fontawesome.com/451aff4b85.js' );
 }
-
 add_action( 'wp_enqueue_scripts', 'enqueue_load_fa');
 add_action('wp_enqueue_scripts', 'loadjs');
+//Override footer action and delay it for Popup Maker plugin to not remove admin bar
 
 /*						CPT - TAX - METABOX  
 --------------------------------------------------------------------------------------------------------------------

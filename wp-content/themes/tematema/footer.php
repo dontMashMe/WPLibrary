@@ -1,4 +1,6 @@
 <?php wp_footer();?>
+
+
 </div>
 <footer>
             <div class="container foot-container">

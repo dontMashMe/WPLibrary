@@ -43,7 +43,7 @@ get_header();
                             <script>
                                 ids.push(<?php echo $knjiga->id_knjige?>);
                             </script>
-                            <a href="" onclick="makni_izKosarice(<?php echo $knjiga->id_knjige?>); popIdKnjige(<?php echo $knjiga->id_knjige?>, ids); return false;"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                            <a href="" onclick="makni_izKosarice(<?php echo $knjiga->id_knjige?>, ids); popIdKnjige(<?php echo $knjiga->id_knjige?>, ids); return false;"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
                         </li>
                     <?php
                 }

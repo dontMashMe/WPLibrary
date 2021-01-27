@@ -17,7 +17,6 @@ if ($user_info != null) {
     $datum = formatiraj_datum($user_info->registered_date);
     $sva_djela = daj_knjige();
     $preporucena_djela = preporuci_knjige($knjige_korisnika, $sva_djela);
-    console_log($preporucena_djela);
     if($preporucena_djela != null && sizeof($preporucena_djela) > 0 ){
         if($preporucena_djela[0] != null) $prva_knjiga = $preporucena_djela[0];
         else $prva_knjiga = $nema_preporuke;
@@ -100,7 +99,7 @@ if ($user_info != null) {
                                         ?>
                                     </th>
                                     <th scope="row">
-                                        <a href="" style="padding-left:10px;" onclick="vratiKnjigu(<?php echo $a->book_id ?>); return false;"><i class="fas fa-exchange-alt"></i></a>
+                                        <a href="" style="padding-left:10px;" onclick="vratiKnjigu(<?php echo $a->book_id ?>);"><i class="fas fa-exchange-alt"></i></a>
                                     </th>
                                 </tr>
 

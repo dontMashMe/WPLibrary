@@ -16,7 +16,7 @@
         <nav class="navbar navbar-expand-md navbar-light bg-light" role="navigation">
             <div class="container navcontainer">
                 <!-- Brand and toggle get grouped for better mobile display -->
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigacija" aria-controls="navigacija" aria-expanded="false" onclick="clickMe()" aria-label="<?php esc_attr_e('Toggle navigation', 'your-theme-slug'); ?>">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigacija" aria-controls="navigacija" aria-expanded="false" aria-label="<?php esc_attr_e('Toggle navigation', 'your-theme-slug'); ?>">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <img src="http://localhost/wordpress/wp-content/uploads/2020/12/logo.png">
@@ -32,23 +32,23 @@
                     'walker'            => new WP_Bootstrap_Navwalker(),
                 ));
                 ?>
-    
+
             </div>
             <div class="user-welcome">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <img src="<?php echo get_template_directory_uri().'/images/user-img.jpg' ?>" alt="desc" class="profile-pic">
-                            </div>
-                            <div class="col-sm-8 user-pers-links">
-                                <h6 id="user-name"></h6>
-                                <span id="profile"></span>
-                                <span id="user-links"></span>
-                            </div>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <img src="<?php echo get_template_directory_uri() . '/images/user-img.jpg' ?>" alt="desc" class="profile-pic">
+                        </div>
+                        <div class="col-sm-8 user-pers-links">
+                            <h6 id="user-name"></h6>
+                            <span id="profile"></span>
+                            <span id="user-links"></span>
                         </div>
                     </div>
-                 </div>
-           
+                </div>
+            </div>
+
         </nav>
 
 
@@ -56,8 +56,9 @@
     </header>
     <div class="main-cont">
 
-    <?php
-    /* 
+
+        <?php
+        /* 
     <div id="header" class="container">
 	    <div id="logo">
             <img src="http://localhost/wordpress/wp-content/uploads/2020/12/logo.png">
@@ -86,4 +87,4 @@
     </div>
 
 */
-    ?>
+        ?>

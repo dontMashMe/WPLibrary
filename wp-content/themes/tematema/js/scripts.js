@@ -1,18 +1,19 @@
-$(function(){
+$(function () {
+
 
     $('#newCustomerForm').submit(ajaxSubmit);
     $('#customerFormPrijava').submit(ajaxLogin);
     provjeriLogin();
 
-    $('#userSearch').keypress(function(event){
-        if(event.which === 13){
+    $('#userSearch').keypress(function (event) {
+        if (event.which === 13) {
             var query = $('#userSearch').val();
             search(query);
         }
     })
 
-    $('#userSearchRepo').keypress(function(event){
-        if(event.which === 13){
+    $('#userSearchRepo').keypress(function (event) {
+        if (event.which === 13) {
             var query = $('#userSearchRepo').val();
             searchRepo(query);
         }
@@ -20,45 +21,50 @@ $(function(){
 
 })
 
-function ajaxSubmit(){
+function ajaxSubmit() {
     var newCustomerFormSer = $(this).serialize();
-    var newCustomerForm = $(this).serializeArray(),dataObj = {};
-    $(newCustomerForm).each(function(i, field){
-       dataObj[field.name] = field.value;
+    var newCustomerForm = $(this).serializeArray(),
+        dataObj = {};
+    $(newCustomerForm).each(function (i, field) {
+        dataObj[field.name] = field.value;
     });
-    for(const prop in dataObj) {
-        if(dataObj[prop] == "" || dataObj[prop] == null || dataObj[prop] == undefined){
+    for (const prop in dataObj) {
+        if (dataObj[prop] == "" || dataObj[prop] == null || dataObj[prop] == undefined) {
             alert("Niste unijeli sva polja!");
-            return false; 
+            return false;
         }
     }
     var pass1, pass2;
     newCustomerForm.forEach(element => {
-        switch(element.name){
+        switch (element.name) {
             case "password":
                 pass1 = element.value;
                 break;
             case "password2":
                 pass2 = element.value;
-                break;                    
+                break;
         }
     });
-    if(pass1 != pass2){
+    if (pass1 != pass2) {
         alert("Lozinke se ne poklapaju!");
         return false;
-    }else {
-        if(pass1.length < 6){
+    } else {
+        if (pass1.length < 6) {
             alert("Duljina lozinke mora biti veća od 6 znakova!");
             return false;
-        }else{
+        } else {
             //sva polja validirana
-            $.ajax( {
-                type: 'POST', 
+            $.ajax({
+                type: 'POST',
                 url: my_ajax_object.ajax_url,
-                data: newCustomerFormSer, 
-                success: function(data){
-                    alert(data);
-                    $(window).attr('location','http://localhost/wordpress/prijava/');
+                data: newCustomerFormSer,
+                success: function (data) {
+                    Swal.fire(
+                        'Obrisano!',
+                        'Uspješno ste registrirani!',
+                        'success'
+                    )
+                    $(window).attr('location', 'http://localhost/wordpress/prijava/');
                 }
             });
         }
@@ -66,82 +72,95 @@ function ajaxSubmit(){
     return false;
 }
 
-function ajaxLogin(){
+function ajaxLogin() {
     var loginForm = $(this).serialize();
     $.ajax({
-        type: 'POST', 
-        url: my_ajax_object.ajax_url, 
+        type: 'POST',
+        url: my_ajax_object.ajax_url,
         data: loginForm,
-        success: function(data){
+        success: function (data) {
             var dataObj = JSON.parse(data);
-            if(dataObj == null){
-                alert("Pogrešni podaci!");
+            if (dataObj == null) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Pogrešni podaci',
+                })
                 return false;
-            }else{
+            } else {
                 provjeriLogin();
-                $(window).attr('location','http://localhost/wordpress/profil/');
-                alert("Dobrodošli " + dataObj.user_name_surname);
+                $(window).attr('location', 'http://localhost/wordpress/profil/');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Uspjeh!',
+                    text: 'Dobrodošli!'
+                })
             }
-          
+
         }
     })
     return false;
 }
 
-function provjeriLogin(){
+function provjeriLogin() {
     $.ajax({
         type: 'POST',
         url: my_ajax_object.ajax_url,
-        data:{
+        data: {
             action: 'vrati_sessionId'
         },
-        success: function(data){
+        success: function (data) {
             //console.log(data); //ne razumijem zašto mi stavlja 0 na kraj json-a??????????????????????????
-            if(data.length > 1){
+            if (data.length > 1) {
                 //prijavljen
-                var cldata = data.substring(0, data.length -1); //privremeno rješenje, todo-> otkri odakle 0 
+                var cldata = data.substring(0, data.length - 1); //privremeno rješenje, todo-> otkri odakle 0 
                 var dataObj = JSON.parse(cldata);
                 $('#user-name').html(dataObj.user_name);
                 $('#profile').css('display', 'block');
                 $('#profile').html('<a href="http://localhost/wordpress/profil/"><i class="far fa-id-badge" style="padding-right:10px; margin-top:-10px;"></i>Profil</a><br>')
                 $('#user-links').html('<a href="" onclick="ajaxLogout()"><i class="fas fa-sign-out-alt" style="padding-right:5px;"></i>Odjavi se</a>');
-            }else{
+            } else {
                 //nije
-                $('#user-links').html('<a href="http://localhost/wordpress/prijava/"><i class="fas fa-sign-in-alt" style="padding-right:5px;"></i>Prijava</a>');          
+                $('#user-links').html('<a href="http://localhost/wordpress/prijava/"><i class="fas fa-sign-in-alt" style="padding-right:5px;"></i>Prijava</a>');
                 $('#profile').css('display', 'none');
                 $('#user-name').html("Niste prijavljeni.");
             }
         },
-        error:function(err){
+        error: function (err) {
             alert(err);
         }
     })
 }
-function ajaxLogout(){
+
+function ajaxLogout() {
     $.ajax({
-        type:'POST', 
+        type: 'POST',
         url: my_ajax_object.ajax_url,
-        data:{
+        data: {
             action: 'odjavi_korisnika'
         },
-        success: function(data){
-            $(window).attr('location','http://localhost/wordpress/');
+        success: function (data) {
+            $(window).attr('location', 'http://localhost/wordpress/');
         }
     })
 }
 
-function dodajKosaricu(knjiga_id){
+function dodajKosaricu(knjiga_id) {
     $.ajax({
-        type:'POST',
-        url: my_ajax_object.ajax_url, 
-        data:{
+        type: 'POST',
+        url: my_ajax_object.ajax_url,
+        data: {
             action: 'dodaj_u_kosaricu',
-            knjiga_id : knjiga_id
+            knjiga_id: knjiga_id
         },
-        success: function(data){
-            if(data!=0){
-                alert("Knjiga uspješno dodana u košaricu");
-            }else{
+        success: function (data) {
+            if (data != 0) {
+                Swal.fire(
+                    'Obrisano!',
+                    'Knjiga uspješno dodana u košaricu.',
+                    'success'
+                )
+            } else {
                 alert("Knjiga već u košarici");
             }
             console.log(data);
@@ -149,109 +168,135 @@ function dodajKosaricu(knjiga_id){
     })
 
 }
-function makni_izKosarice(knjiga_id){
-    $('#'+knjiga_id).addClass('list-group-item-danger');
-    $('#'+knjiga_id).fadeOut("slow",function(){
-        $('#'+knjiga_id).remove();   
-        $.ajax({
-            type:'post',
-            url:my_ajax_object.ajax_url,
-            data:{
-                action: 'makni_iz_kosarice',
-                knjiga_id : knjiga_id
-            },
-            success:function(data){
-                if(data!=0){
-                    alert("Knjiga uspješno obrisana iz košarice.");
-                }
-            }
-        })
-    });
+
+function makni_izKosarice(knjiga_id, ids) {
+    Swal.fire({
+        title: 'Jeste li sigurni?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Obriši!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire(
+                'Obrisano!',
+                'Knjiga je uspješno obrisana',
+                'success'
+            )
+            $('#' + knjiga_id).addClass('list-group-item-danger');
+            $('#' + knjiga_id).fadeOut("slow", function () {
+                $('#' + knjiga_id).remove();
+                $.ajax({
+                    type: 'post',
+                    url: my_ajax_object.ajax_url,
+                    data: {
+                        action: 'makni_iz_kosarice',
+                        knjiga_id: knjiga_id
+                    },
+                    success: function (data) {
+                        popIdKnjige(knjiga_id, ids); //makni iz arraya knjiga jer inače će se posuditi ništa ako se svejedno klikne na posudi
+                    }
+                })
+            });
+        }
+    })
+
+
 }
-function vratiKnjigu(knjiga_id){
+
+function vratiKnjigu(knjiga_id) {
     const redakKnjige = $('#' + knjiga_id);
     $.ajax({
-        type:'post',
-        url:my_ajax_object.ajax_url,
-        data:{
+        type: 'post',
+        url: my_ajax_object.ajax_url,
+        data: {
             action: 'promijeni_status_knjige',
-            knjiga_id : knjiga_id
+            knjiga_id: knjiga_id
         },
-        success:function(data){
+        success: function (data) {
             console.log(data);
-            alert("Knjiga uspješno vraćena!");
+            Swal.fire(
+                'Obrisano!',
+                'Knjiga je uspješno vraćena!',
+                'success'
+            )
             redakKnjige.remove();
         }
     })
 }
 
-function popIdKnjige(id, ids){
-    for(var i = 0; i < ids.length; i++){
-        if(ids[i] == id){
+function popIdKnjige(id, ids) {
+    for (var i = 0; i < ids.length; i++) {
+        if (ids[i] == id) {
             ids.splice(i, 1); //splice at (index, # of elements)
         }
     }
     console.log(ids);
 }
-function dovrsiNarudzbu(ids){
-    $.ajax({
-        type: 'post',
-        url:my_ajax_object.ajax_url,
-        data:{
-            action: 'dovrsi_narudzbu',
-            ids: ids
-        },
-        success:function(data){
-            alert("Knjige su uspješno upisane! Pokupite ih u knjižnici.");
-            $(window).attr('location','http://localhost/wordpress/profil');
 
-            console.log(data);
-        }
-    })
+function dovrsiNarudzbu(ids) {
+    if (ids.length > 0) {
+        $.ajax({
+            type: 'post',
+            url: my_ajax_object.ajax_url,
+            data: {
+                action: 'dovrsi_narudzbu',
+                ids: ids
+            },
+            success: function (data) {
+                stvoriModal("Uspjeh!", "Knjige su uspješno upisane! Pokupite ih u knjižnici.");
+                // alert("Knjige su uspješno upisane! Pokupite ih u knjižnici.");
+                //$(window).attr('location', 'http://localhost/wordpress/profil');
+
+
+            }
+        })
+    } else {
+        alert("Košarica je prazna.");
+    }
 }
 
-function search(search_string){
+function search(search_string) {
     const node = $('.books-div');
     node.empty();
     node.append('<div class="spinner-border" role="status"><span class="sr-only">Učitavam....</span></div>');
     $.ajax({
-        type: 'post', 
-        url:my_ajax_object.ajax_url,
+        type: 'post',
+        url: my_ajax_object.ajax_url,
         dataType: 'html',
-        data:{
+        data: {
             action: 'arhiva_search',
             query: search_string
         },
-        success:function(data){
-            var cldata = data.substring(0, data.length -1); 
+        success: function (data) {
+            var cldata = data.substring(0, data.length - 1);
             node.append(cldata);
         },
-        complete:function(){
+        complete: function () {
             $('.spinner-border').hide();
         }
     })
 }
 
-function searchRepo(search_string){
+function searchRepo(search_string) {
     const node = $('.repo-holder');
     node.empty();
     node.append('<div class="spinner-border" role="status"><span class="sr-only">Učitavam....</span></div>');
     $.ajax({
-        type: 'post', 
-        url:my_ajax_object.ajax_url,
+        type: 'post',
+        url: my_ajax_object.ajax_url,
         dataType: 'html',
-        data:{
+        data: {
             action: 'repo_search',
             query: search_string
         },
-        success:function(data){
-            var cldata = data.substring(0, data.length -1); 
+        success: function (data) {
+            var cldata = data.substring(0, data.length - 1);
             node.append(cldata);
         },
-        complete:function(){
+        complete: function () {
             $('.spinner-border').hide();
         }
     })
 }
-
-
