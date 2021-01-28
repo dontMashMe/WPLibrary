@@ -37,6 +37,7 @@ define( 'DB_CHARSET', 'utf8mb4' );
 /** The Database Collate type. Don't change this if in doubt. */
 define( 'DB_COLLATE', '' );
 
+
 /**#@+
  * Authentication Unique Keys and Salts.
  *
@@ -77,7 +78,10 @@ $table_prefix = 'wp_';
  *
  * @link https://wordpress.org/support/article/debugging-in-wordpress/
  */
-define( 'WP_DEBUG', false );
+ini_set('display_errors','Off');
+ini_set('error_reporting', E_ALL );
+define('WP_DEBUG', false);
+define('WP_DEBUG_DISPLAY', false);
 
 /* That's all, stop editing! Happy publishing. */
 

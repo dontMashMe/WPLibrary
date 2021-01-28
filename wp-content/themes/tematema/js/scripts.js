@@ -156,7 +156,7 @@ function dodajKosaricu(knjiga_id) {
         success: function (data) {
             if (data != 0) {
                 Swal.fire(
-                    'Obrisano!',
+                    'Uspjeh!',
                     'Knjiga uspješno dodana u košaricu.',
                     'success'
                 )
@@ -245,11 +245,12 @@ function dovrsiNarudzbu(ids) {
                 ids: ids
             },
             success: function (data) {
-                stvoriModal("Uspjeh!", "Knjige su uspješno upisane! Pokupite ih u knjižnici.");
-                // alert("Knjige su uspješno upisane! Pokupite ih u knjižnici.");
-                //$(window).attr('location', 'http://localhost/wordpress/profil');
-
-
+                Swal.fire(
+                    'Uspjeh!',
+                    'Knjige su uspješno posuđene!',
+                    'success'
+                )
+                $(window).attr('location', 'http://localhost/wordpress/profil');
             }
         })
     } else {

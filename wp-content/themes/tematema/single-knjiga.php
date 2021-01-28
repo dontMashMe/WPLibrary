@@ -5,7 +5,12 @@
         while(have_posts()){
             the_post();
             $knjiga = vrati_knjigu_poId($post->ID);
-            $istaknutaSlika = get_the_post_thumbnail_url($post->ID);
+            if(get_the_post_thumbnail_url($post->ID)){
+                $istaknutaSlika = get_the_post_thumbnail_url($post->ID);
+            }else{
+                $istaknutaSlika = get_template_directory_uri().'/images/no_image.png'; 
+            }
+            
             $autor_obj = vrati_autora(get_post_meta($post->ID, 'autori_knjige', true));
             $kategorije ="";
             foreach($knjiga->kategorije as $a){

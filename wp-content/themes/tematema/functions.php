@@ -561,7 +561,7 @@ function preporuci_knjige($knjige_korisnika, $sve_knjige){
 					array_push($kategorije, $c->kategorija_ime);
 				}
 			}
-		}
+		} 
 		foreach($sve_knjige as $a){  
 			foreach($a->kategorije as $b){
 				foreach($b as $c){ //ista kategorija                 //nije duplikat                     //nije već posuđena knjiga

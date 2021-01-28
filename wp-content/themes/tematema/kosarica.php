@@ -49,7 +49,7 @@ get_header();
                 }
             ?>
         </ul>
-        <button type="button" onclick="dovrsiNarudzbu(ids)" class="btn btn-success">Dovrši narudžbu</button>
+        <button type="button" onclick="dovrsiNarudzbu(ids)" class="btn btn-success" style="margin-bottom:250px;">Dovrši narudžbu</button>
 
     </div>
 

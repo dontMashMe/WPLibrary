@@ -30,6 +30,16 @@ if ($user_info != null) {
         $druga_knjiga = $sva_djela[1];
         $treca_knjiga = $sva_djela[2];
     }
+
+    if($prva_knjiga->istaknuta_slika == null || $prva_knjiga->istaknuta_slika == ""){
+        $prva_knjiga->istaknuta_slika = get_template_directory_uri() . '/images/no_image.png';
+    }
+    if($druga_knjiga->istaknuta_slika == null || $druga_knjiga->istaknuta_slika == ""){
+        $druga_knjiga->istaknuta_slika = get_template_directory_uri() . '/images/no_image.png';
+    }
+    if($treca_knjiga->istaknuta_slika == null ||$treca_knjiga->istaknuta_slika == ""){
+        $treca_knjiga->istaknuta_slika = get_template_directory_uri() . '/images/no_image.png';
+    }
         
 ?>
     <div class="container-fluid user-prof-main_div">

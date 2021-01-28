@@ -8,7 +8,7 @@
             if(get_the_post_thumbnail_url($post->ID)){
                 $istaknutaSlika = get_the_post_thumbnail_url($post->ID);
             }else{
-                $istaknutaSlika = get_template_directory_uri().'/images/no_image.png'; 
+                $istaknutaSlika = get_template_directory_uri().'/images/no_author.png'; 
             }
             $knjige_autora = daj_knjige_autora(get_the_title($post->ID));
             $knjigeHtml = "<ul class='autor_list_singl' style='margin-left:15px;'>";
